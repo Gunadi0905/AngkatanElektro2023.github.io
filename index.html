@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angkatan 23 - Login & Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(100px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #ccc;
+        }
+        
+        .tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid #4CAF50;
+        }
+        
+        .form-container {
+            padding: 20px;
+            display: none;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ANGKATAN 23</h1>
+            <p>Selamat datang di portal Angkatan 23</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">Login</div>
+            <div class="tab" onclick="switchTab('register')">Daftar</div>
+        </div>
+
+        <!-- Form Login -->
+        <div id="loginForm" class="form-container active">
+            <form onsubmit="return handleLogin(event)">
+                <div class="input-group">
+                    <label for="loginNim">NIM</label>
+                    <input type="text" id="loginNim" required placeholder="Masukkan NIM (F1B02310027)">
+                    <div class="error-message" id="loginNimError"></div>
+                </div>
+                <div class="input-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Masukkan password">
+                    <div class="error-message" id="loginPasswordError"></div>
+                </div>
+                <button type="submit" class="btn">Masuk</button>
+            </form>
+        </div>
+
+        <!-- Form Register -->
+        <div id="registerForm" class="form-container">
+            <form onsubmit="return handleRegister(event)">
+                <div class="input-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+                </div>
+                <div class="input-group">
+                    <label for="nim">NIM</label>
+                    <input type="text" id="nim" required pattern="F1B[0-9]{8}" placeholder="Format: F1B02310027">
+                    <div class="error-message" id="nimError"></div>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Nomor Telepon</label>
+                    <input type="tel" id="phone" required pattern="[0-9]{10,13}" placeholder="Contoh: 081234567890">
+                </div>
+                <div class="input-group">
+                    <label for="alamat">Alamat</label>
+                    <textarea id="alamat" rows="3" required placeholder="Masukkan alamat lengkap"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="hobi">Hobi</label>
+                    <input type="text" id="hobi" required placeholder="Masukkan hobi">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="Minimal 6 karakter">
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                <button type="submit" class="btn">Daftar</button>
+                <div class="success-message" id="registerSuccess">
+                    Pendaftaran berhasil! Silakan login.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.getElementById('registerSuccess').style.display = 'none';
+
+            // Switch tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const nim = document.getElementById('loginNim').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.nim === nim && u.password === password);
+
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                window.location.href = 'members.html';
+            } else {
+                document.getElementById('loginNimError').textContent = 'NIM atau password salah!';
+                document.getElementById('loginNimError').style.display = 'block';
+                document.querySelector('#loginForm form').classList.add('shake');
+                setTimeout(() => {
+                    document.querySelector('#loginForm form').classList.remove('shake');
+                }, 500);
+            }
+            return false;
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+
+            if (password.length < 6) {
+                document.getElementById('passwordError').textContent = 'Password minimal 6 karakter!';
+                document.getElementById('passwordError').style.display = 'block';
+                return false;
+            }
+
+            const userData = {
+                nama: document.getElementById('nama').value,
+                nim: document.getElementById('nim').value,
+                phone: document.getElementById('phone').value,
+                alamat: document.getElementById('alamat').value,
+                hobi: document.getElementById('hobi').value,
+                password: password
+            };
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users.some(user => user.nim === userData.nim)) {
+                document.getElementById('nimError').textContent = 'NIM sudah terdaftar!';
+                document.getElementById('nimError').style.display = 'block';
+                return false;
+            }
+
+            users.push(userData);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('registerSuccess').style.display = 'block';
+            document.getElementById('registerForm').reset();
+
+            setTimeout(() => {
+                switchTab('login');
+            }, 2000);
+
+            return false;
+        }
+    </script>
+</body>
+
+</html>

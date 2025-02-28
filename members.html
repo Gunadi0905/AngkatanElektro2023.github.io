@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Angkatan 23</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-image: url('bg1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+        
+        .profile-info {
+            line-height: 1.4;
+        }
+        
+        .profile-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .profile-nim {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .home-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .members-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .study-btn {
+            background-color: #def321;
+            color: white;
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .main-content {
+            margin-top: 80px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+        
+        .card-content {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .profile-card {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+        
+        .profile-card .card-title {
+            color: white;
+            border-bottom-color: #2196F3;
+        }
+        
+        .profile-card .card-content {
+            color: #ddd;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="user-profile">
+            <div class="profile-info">
+                <div class="profile-name" id="userName">Loading...</div>
+                <div class="profile-nim" id="userNim">Loading...</div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn members-btn" onclick="window.location.href='anggota23.html'">Anggota</button>
+            <button class="nav-btn study-btn" onclick="window.location.href='study.html'">Study Group</button>
+            <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="card profile-card">
+            <h2 class="card-title">Profil Saya</h2>
+            <div class="card-content">
+                <p><strong>Nama:</strong> <span id="profileName">Loading...</span></p>
+                <p><strong>NIM:</strong> <span id="profileNim">Loading...</span></p>
+                <p><strong>No. Telepon:</strong> <span id="profilePhone">Loading...</span></p>
+                <p><strong>Alamat:</strong> <span id="profileAddress">Loading...</span></p>
+                <p><strong>Hobi:</strong> <span id="profileHobi">Loading...</span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Informasi</h2>
+            <div class="card-content">
+                <p>Selamat datang di Dashboard Angkatan 23!</p>
+                <p>Di sini Anda dapat melihat informasi profil dan data anggota lainnya.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update profile information
+            document.getElementById('userName').textContent = currentUser.nama;
+            document.getElementById('userNim').textContent = currentUser.nim;
+            document.getElementById('profileName').textContent = currentUser.nama;
+            document.getElementById('profileNim').textContent = currentUser.nim;
+            document.getElementById('profilePhone').textContent = currentUser.phone;
+            document.getElementById('profileAddress').textContent = currentUser.alamat;
+            document.getElementById('profileHobi').textContent = currentUser.hobi;
+
+            // Update total members
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            document.getElementById('totalMembers').textContent = users.length;
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>
